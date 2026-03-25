@@ -1,56 +1,89 @@
-# 🔱 Chitragupta — Document RAG Pipeline
+# Chitragupta -- RAG Pipeline
 
-> **Hindu Mythology**: Record Keeper | Document indexing and RAG pipeline
+> Hindu Mythology: The Divine Record Keeper | Document indexing and semantic search for RAG applications
 
-[![GitHub Pages](https://img.shields.io/badge/🌐_Live_Demo-Visit_Site-blue?style=for-the-badge)](https://MukundaKatta.github.io/chitragupta/)
+[![CI](https://github.com/MukundaKatta/chitragupta/actions/workflows/ci.yml/badge.svg)](https://github.com/MukundaKatta/chitragupta/actions)
+[![GitHub Pages](https://img.shields.io/badge/Live_Demo-Visit_Site-blue?style=for-the-badge)](https://MukundaKatta.github.io/chitragupta/)
 [![GitHub](https://img.shields.io/github/license/MukundaKatta/chitragupta?style=flat-square)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/MukundaKatta/chitragupta?style=flat-square)](https://github.com/MukundaKatta/chitragupta/stargazers)
 
-## 🚀 Overview
+Chitragupta is a pure-Python RAG (Retrieval-Augmented Generation) pipeline that handles document ingestion, chunking, embedding simulation, and semantic search -- with zero external dependencies.
 
-Document indexing and RAG pipeline
+## Features
 
-**Tech Stack:** Python, FastAPI
+- **Document ingestion** with automatic deduplication
+- **Three chunking strategies**: fixed-size windows, sentence-boundary, paragraph-boundary
+- **Hash-based pseudo-embeddings** (deterministic, no ML libraries needed)
+- **Semantic search** with cosine similarity and metadata filtering
+- **CLI** with `ingest`, `search`, and `stats` commands
+- **Python 3.9+** compatible
 
-## 📦 Quick Start
+## Quick Start
 
-```bash
-git clone https://github.com/MukundaKatta/chitragupta.git
-cd chitragupta
-# Follow setup instructions below
+```python
+from chitragupta import RAGPipeline, Document
+
+pipeline = RAGPipeline(chunk_strategy="sentence", embedding_dim=64)
+
+docs = [
+    Document(content="The Ganges is a sacred river in India.", metadata={"topic": "geography"}),
+    Document(content="Python is widely used for data science.", metadata={"topic": "tech"}),
+]
+
+results = pipeline.run(docs, query="rivers of India", k=3)
+for r in results:
+    print(f"[{r.score:.4f}] {r.text}")
 ```
 
-## 🏗️ Project Structure
+## CLI Usage
+
+```bash
+# Ingest documents
+PYTHONPATH=src python -m chitragupta ingest doc1.txt doc2.txt
+
+# Search
+PYTHONPATH=src python -m chitragupta search "sacred river" doc1.txt doc2.txt
+
+# Pipeline stats
+PYTHONPATH=src python -m chitragupta stats doc1.txt
+```
+
+## Project Structure
 
 ```
 chitragupta/
-├── README.md
-├── LICENSE
-├── CLAUDE.md
-├── .gitignore
-├── src/
-│   ├── main.py
-│   ├── config.py
-│   └── utils.py
+├── src/chitragupta/
+│   ├── __init__.py
+│   ├── core.py          # RAGPipeline, Document, Chunk
+│   ├── chunker.py       # FixedSize, Sentence, Paragraph chunkers
+│   ├── embedder.py      # Hash-based pseudo-embeddings
+│   ├── search.py        # Semantic search engine
+│   ├── config.py        # Environment-based configuration
+│   ├── cli.py           # Command-line interface
+│   └── __main__.py
 ├── tests/
-│   └── test_main.py
-├── docs/
-│   └── architecture.md
-├── examples/
-│   └── basic_usage.py
-└── .github/
-    └── workflows/
-        └── static.yml
+│   ├── test_core.py
+│   ├── test_chunker.py
+│   ├── test_embedder.py
+│   └── test_search.py
+├── docs/ARCHITECTURE.md
+├── pyproject.toml
+└── Makefile
 ```
 
-## 🌐 Live Demo
+## Running Tests
+
+```bash
+PYTHONPATH=src python3 -m pytest tests/ -v
+```
+
+## Architecture
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for details.
+
+## Live Demo
 
 Visit the landing page: **https://MukundaKatta.github.io/chitragupta/**
 
-## 📄 License
+## License
 
-MIT License — © 2026 Officethree Technologies
-
-## 🔱 Part of the Mythological Portfolio
-
-This is project **#chitragupta** in the [100-project Mythological Portfolio](https://github.com/MukundaKatta) by Officethree Technologies.
+MIT License -- Part of the [Mythological Portfolio](https://github.com/MukundaKatta) by Officethree Technologies.

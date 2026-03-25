@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "chitragupta"
+version = "0.1.0"
+description = "Document indexing and RAG pipeline with semantic search"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+keywords = ["rag", "search", "embeddings", "document-indexing"]
+
+[project.scripts]
+chitragupta = "chitragupta.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
